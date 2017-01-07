@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>变化检测问题</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<style>
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<body>
+    <h4>变化检测问题</h4>
+    <a href="https://segmentfault.com/a/1190000005832164">参考链接</a>
+    <div id="app" v-cloak>
+        <div>a:{{a}}</div>
+        <div v-if=b>b:2s后修改值：{{b}}</div>
+    </div>
+    <script src="http://cdn.bootcss.com/vue/2.0.7/vue.js"></script>
+    <script>
+        var data = {
+            a: 123,
+            b: 4
+        }
+        var vm = new Vue({
+            el: '#app',
+            data: data,
+            mounted: function() {
+                var _self = this;
+                setTimeout(function() {
+                    _self.$set(_self, 'b', 1234);
+                }, 2000);
+
+                //Vue.set(vm.someObject, 'b', 2)修改值
+                setTimeout(function() {
+                    Vue.set(data, 'b', 'Vue.set');
+                }, 4000);
+            }
+        })
+    </script>
+</body>
+
+</html>
