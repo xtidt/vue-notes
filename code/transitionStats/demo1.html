@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>状态动画 与 watcher</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<style>
+    [v-cloak] {
+        opacity: 1;
+    }
+</style>
+
+<body>
+    <script src="http://cdn.bootcss.com/vue/2.0.7/vue.js"></script>
+    <script src="http://cdn.bootcss.com/tween.js/r14/Tween.js"></script>
+
+    <h4>状态动画</h4>
+    <div id="app" v-cloak>
+        <div id="animated-number-demo">
+            <input v-model.number="number" type="number" step="20">
+            <p>{{ animatedNumber }}</p>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#animated-number-demo',
+            data: {
+                number: 0,
+                animatedNumber: 0
+            },
+            watch: {
+                number: function(newValue, oldValue) {
+                    var vm = this
+
+                    function animate(time) {
+                        requestAnimationFrame(animate)
+                        TWEEN.update(time)
+                    }
+                    new TWEEN.Tween({
+                            tweeningNumber: oldValue
+                        })
+                        .easing(TWEEN.Easing.Quadratic.Out)
+                        .to({
+                            tweeningNumber: newValue
+                        }, 500)
+                        .onUpdate(function() {
+                            vm.animatedNumber = this.tweeningNumber.toFixed(0)
+                        })
+                        .start();
+                    animate();
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

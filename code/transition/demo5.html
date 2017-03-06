@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>多个组件的过渡</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<style>
+    .component-fade-enter-active,
+    .component-fade-leave-active {
+        transition: opacity .3s ease;
+    }
+    
+    .component-fade-enter,
+    .component-fade-leave-active {
+        opacity: 0;
+    }
+</style>
+
+<body>
+    <script src="http://cdn.bootcss.com/vue/2.0.7/vue.js"></script>
+    <div id="example-4">
+        <input type="radio" id="one" value="v-a" v-model="view">
+        <label for="one">One</label>
+        <br>
+        <input type="radio" id="two" value="v-b" v-model="view">
+        <label for="two">Two</label>
+        <br>
+        <br>
+        <br>
+        <br>
+
+
+        <transition name="component-fade" mode="out-in">
+            <component v-bind:is="view"></component>
+        </transition>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#example-4',
+            data: {
+                view: 'v-a'
+            },
+            components: {
+                'v-a': {
+                    template: '<div>Component A</div>'
+                },
+                'v-b': {
+                    template: '<div>Component B</div>'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
