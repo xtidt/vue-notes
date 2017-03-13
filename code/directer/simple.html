@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>自定义指令</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+</head>
+
+<body>
+    <div id="demo">
+        <input type="text" v-focus><br>
+
+        <div id="hook-arguments-example" v-demo:hello.a.b="message"></div>
+
+        <h4>函数简写</h4>
+
+        <input type="text" v-color-swatch><br>
+    </div>
+    <script src="http://cdn.bootcss.com/vue/2.0.7/vue.js"></script>
+    <script>
+        // 注册一个全局自定义指令 v-focus
+        Vue.directive('focus', {
+            // 当绑定元素插入到 DOM 中。
+            inserted: function(el) {
+                // 聚焦元素
+                el.focus();
+
+                alert('inserted');
+
+            },
+
+            bind: function(el) {
+
+                alert('bind');
+            },
+
+            update: function(el) {
+                alert('update');
+            },
+
+            componentUpdated: function() {
+                alert('componentUpdated');
+            }
+        });
+
+        Vue.directive('demo', {
+            bind: function(el, binding, vnode) {
+                var s = JSON.stringify
+                el.innerHTML =
+                    'name: ' + s(binding.name) + '<br>' +
+                    'value: ' + s(binding.value) + '<br>' +
+                    'expression: ' + s(binding.expression) + '<br>' +
+                    'argument: ' + s(binding.arg) + '<br>' +
+                    'modifiers: ' + s(binding.modifiers) + '<br>' +
+                    'vnode keys: ' + Object.keys(vnode).join(', ')
+            }
+        });
+
+        Vue.directive('color-swatch', function(el, binding) {
+            alert(el);
+            el.style.backgroundColor = binding.value
+        });
+
+
+        var vm = new Vue({
+            el: '#demo',
+            data: {
+                message: 'hello!'
+            }
+        });
+    </script>
+</body>
+
+</html>

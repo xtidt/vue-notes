@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>ring</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<style>
+
+</style>
+<script src="http://cdn.bootcss.com/vue/2.0.7/vue.js"></script>
+
+
+<body>
+    <h3>示例1</h3>
+    <div id="ring">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        function Circle() {
+            this.radius = 55; // 圆环半径
+            this.lineWidth = 7; // 圆环边的宽度
+            this.strokeStyle = '#ccc'; //边的颜色
+            this.fillStyle = 'blue'; //填充色
+            this.lineCap = 'round';
+            this.x = 65;
+            this.y = 65;
+        }
+
+        Circle.prototype.draw = function(ctx) {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true); // 坐标为250的圆，这里起始角度是0，结束角度是Math.PI*2
+            ctx.lineWidth = this.lineWidth;
+            ctx.strokeStyle = this.strokeStyle;
+            ctx.stroke(); // 这里用stroke画一个空心圆，想填充颜色的童鞋可以用fill方法
+        };
+
+        function Ring(startAngle, percent) {
+            Circle.call(this);
+            this.startAngle = startAngle || 3 * Math.PI / 2; //弧起始角度
+            this.percent = percent; //弧占的比例
+        }
+
+        Ring.prototype = Object.create(Circle.prototype);
+
+        Ring.prototype.drawRing = function(ctx, canvas) {
+            this.draw(ctx); // 调用Circle的draw方法画圈圈
+
+            // angle
+            ctx.beginPath();
+            var anglePerSec = 2 * Math.PI / (100 / this.percent); // 蓝色的弧度
+            ctx.arc(this.x, this.y, this.radius, this.startAngle, this.startAngle + anglePerSec, false); //这里的圆心坐标要和cirle的保持一致
+
+            //渐变
+            //需要添加渐变区域颜色参数
+            var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop("0", "#725afe");
+            gradient.addColorStop("1.0", "#2aefec");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineCap = this.lineCap;
+            ctx.stroke();
+            ctx.closePath();
+        };
+
+        /**
+         * 初始化
+         */
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+
+        var myData = new Ring(0, 50); //定义
+        myData.drawRing(ctx, canvas); //绘制
+    </script>
+</body>
